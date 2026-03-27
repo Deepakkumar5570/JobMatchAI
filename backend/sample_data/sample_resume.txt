@@ -1,0 +1,14 @@
+Deepak Kumar
+AI/ML and Full-Stack Developer skilled in Computer Vision, Deep Learning, Generative AI and Optimization.
+
+Experience:
+Research Intern at IIT Kanpur
+Built a UV imaging pipeline for plant disease detection.
+Worked with TensorFlow, PyTorch, OpenCV, Raspberry Pi, and model deployment.
+
+Projects:
+Built a RAG chatbot using LangChain and FastAPI.
+Built a coding assistant using LangGraph and LLMs.
+
+Skills:
+Python, Java, TensorFlow, PyTorch, OpenCV, LangChain, FastAPI, SQL, Docker, React
