@@ -17,7 +17,8 @@ async def upload_resume(file: UploadFile = File(...)):
     skills = extract_skills(parsed_resume["cleaned_text"])
 
     return {
-        "filename": file.filename,
-        "resume_text_preview": parsed_resume["raw_text"][:1000],
-        "extracted_skills": skills
+    "filename": file.filename,
+    "resume_text_preview": parsed_resume["raw_text"][:1000],
+    "sections": parsed_resume["sections"],
+    "extracted_skills": skills
     }

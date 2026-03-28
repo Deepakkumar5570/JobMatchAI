@@ -4,6 +4,7 @@ def calculate_ats_score(resume_skills: list, jd_skills: list) -> dict:
 
     matched = resume_set.intersection(jd_set)
     missing = jd_set.difference(resume_set)
+    extra = resume_set.difference(jd_set)
 
     if len(jd_set) == 0:
         score = 0
@@ -13,5 +14,6 @@ def calculate_ats_score(resume_skills: list, jd_skills: list) -> dict:
     return {
         "ats_score": score,
         "matched_skills": sorted(list(matched)),
-        "missing_skills": sorted(list(missing))
+        "missing_skills": sorted(list(missing)),
+        "extra_skills": sorted(list(extra))
     }
