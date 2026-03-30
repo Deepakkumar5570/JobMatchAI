@@ -1,11 +1,11 @@
-import json
 from app.services.llm.llm_client import generate_response
+from app.services.llm.json_utils import extract_json_from_response
 
-def generate_application(resume_text: str, jd_text: str):
+def generate_application_messages(resume_text: str, jd_text: str):
     prompt = f"""
-You are a professional job application assistant.
+You are an expert job application assistant.
 
-Based on this resume and job description, generate outreach content.
+Generate professional application messages.
 
 RESUME:
 {resume_text}
@@ -14,25 +14,24 @@ JOB DESCRIPTION:
 {jd_text}
 
 Return ONLY valid JSON in this exact format:
-
 {{
-  "cold_email": "short email",
-  "referral_message": "short referral request",
-  "linkedin_dm": "short linkedin message"
+  "cold_email": "email text",
+  "referral_message": "referral text",
+  "linkedin_dm": "linkedin message"
 }}
 
 Do not write markdown.
 Do not add explanation outside JSON.
 """
 
-    response = generate_response(prompt)
-
     try:
-        return json.loads(response)
-    except:
+        response = generate_response(prompt)
+        return extract_json_from_response(response)
+
+    except Exception as e:
+        print("APPLICATION ERROR:", str(e))
         return {
-            "cold_email": "",
-            "referral_message": "",
-            "linkedin_dm": "",
-            "raw_output": response
+            "cold_email": "N/A",
+            "referral_message": "N/A",
+            "linkedin_dm": "N/A"
         }

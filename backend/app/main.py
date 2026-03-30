@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.routes import resume, jobs, scoring, health, llm
 
 app = FastAPI(
@@ -7,19 +9,24 @@ app = FastAPI(
     description="AI-powered Resume & Job Matching System"
 )
 
-# Health route
+# ----------------------------
+# CORS middleware for frontend
+# ----------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ----------------------------
+# API Routes
+# ----------------------------
 app.include_router(health.router, prefix="/health", tags=["Health"])
-
-# Resume upload + parsing
 app.include_router(resume.router, prefix="/resume", tags=["Resume"])
-
-# Job description parsing
 app.include_router(jobs.router, prefix="/jobs", tags=["Jobs"])
-
-# Scoring + matching engine
 app.include_router(scoring.router, prefix="/scoring", tags=["Scoring"])
-
-# LLM intelligence layer
 app.include_router(llm.router, prefix="/llm", tags=["LLM"])
 
 @app.get("/")

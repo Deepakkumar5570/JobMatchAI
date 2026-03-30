@@ -26,3 +26,6 @@ def generate_response(prompt: str) -> str:
         return response.text.strip()
     except Exception as e:
         return f"LLM Error: {str(e)}"
+
+
+
