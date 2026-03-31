@@ -1,25 +1,63 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import "./App.css";
+
 import Navbar from "./components/Navbar";
 import ResumeUpload from "./components/ResumeUpload";
 import JobDescriptionInput from "./components/JobDescriptionInput";
 import ScoreResult from "./components/ScoreResult";
 import LLMAnalysis from "./components/LLMAnalysis";
-import API from "./services/api";
+
+import { uploadResume, runScoreMatch, runLLMAnalysis } from "./services/api";
 
 function App() {
+  const [selectedFile, setSelectedFile] = useState(null);
   const [resumeText, setResumeText] = useState("");
-  const [jdText, setJdText] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
   const [projectText, setProjectText] = useState("");
-  const [scoreResult, setScoreResult] = useState(null);
-  const [llmAnalysis, setLlmAnalysis] = useState(null);
+
+  const [scoringResult, setScoringResult] = useState(null);
+  const [llmResult, setLlmResult] = useState(null);
+
+  const [uploading, setUploading] = useState(false);
   const [loadingScore, setLoadingScore] = useState(false);
   const [loadingLLM, setLoadingLLM] = useState(false);
 
-  const handleScoreMatch = async () => {
-    console.log("Before Score Match:", { resumeText, jdText, projectText });
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      alert("Please select a resume file first.");
+      return;
+    }
 
-    if (!resumeText.trim() || !jdText.trim()) {
-      return alert("Resume text and JD text required");
+    try {
+      setUploading(true);
+      const data = await uploadResume(selectedFile);
+
+      const extractedText =
+        data?.resume_text ||
+        data?.text ||
+        data?.raw_text ||
+        data?.content ||
+        "";
+
+      if (!extractedText) {
+        alert("Resume uploaded but no text was extracted.");
+        console.log("Upload response:", data);
+      }
+
+      setResumeText(extractedText);
+      alert("Resume uploaded successfully!");
+    } catch (error) {
+      console.error("Upload Error:", error);
+      alert("Resume upload failed.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleScoreMatch = async () => {
+    if (!resumeText || !jobDescription) {
+      alert("Please upload resume and paste job description first.");
+      return;
     }
 
     try {
@@ -27,29 +65,28 @@ function App() {
 
       const payload = {
         resume_text: resumeText,
-        jd_text: jdText,
-        project_text: projectText || "",
+        jd_text: jobDescription,
+        project_text: projectText,
       };
 
-      console.log("SCORE PAYLOAD:", payload);
+      console.log("Scoring payload:", payload);
 
-      const res = await API.post("/scoring/match", payload);
+      const data = await runScoreMatch(payload);
+      console.log("Scoring response:", data);
 
-      console.log("Scoring Result:", res.data);
-      setScoreResult(res.data);
+      setScoringResult(data);
     } catch (error) {
-      console.error("Scoring Error:", error.response?.data || error.message);
-      alert("Scoring failed");
+      console.error("Score Match Error:", error);
+      alert("Score matching failed.");
     } finally {
       setLoadingScore(false);
     }
   };
 
-  const handleLLMAnalyze = async () => {
-    console.log("Before LLM Analyze:", { resumeText, jdText, projectText });
-
-    if (!resumeText.trim() || !jdText.trim()) {
-      return alert("Resume text and JD text required");
+  const handleLLMAnalysis = async () => {
+    if (!resumeText || !jobDescription) {
+      alert("Please upload resume and paste job description first.");
+      return;
     }
 
     try {
@@ -57,76 +94,67 @@ function App() {
 
       const payload = {
         resume_text: resumeText,
-        jd_text: jdText,
-        project_text: projectText || "",
+        jd_text: jobDescription,
+        project_text: projectText,
       };
 
-      console.log("LLM PAYLOAD:", payload);
+      console.log("LLM payload:", payload);
 
-      const res = await API.post("/llm/analyze", payload);
+      const data = await runLLMAnalysis(payload);
+      console.log("LLM response:", data);
 
-      console.log("LLM Result:", res.data);
-      setLlmAnalysis(res.data);
+      setLlmResult(data);
     } catch (error) {
-      console.error("LLM Error:", error.response?.data || error.message);
-      alert("LLM analysis failed");
+      console.error("LLM Analysis Error:", error);
+      alert("LLM analysis failed.");
     } finally {
       setLoadingLLM(false);
     }
   };
 
-  console.log("resumeText:", resumeText);
-  console.log("jdText:", jdText);
-  console.log("projectText:", projectText);
-
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
+    <div className="app-shell">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-        {/* Top Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ResumeUpload setResumeText={setResumeText} />
-
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h2 className="text-2xl font-bold mb-4">Job Inputs</h2>
-
-            <JobDescriptionInput jdText={jdText} setJdText={setJdText} />
-
-            <div className="mt-6">
-              <label className="block text-sm font-semibold mb-2">
-                Project Text (Optional)
-              </label>
-              <textarea
-                rows="8"
-                value={projectText}
-                onChange={(e) => setProjectText(e.target.value)}
-                placeholder="Paste project descriptions here..."
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-4 mt-6">
-              <button
-                onClick={handleScoreMatch}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-3 rounded-xl shadow transition"
-              >
-                {loadingScore ? "Matching..." : "Run Score Match"}
-              </button>
-
-              <button
-                onClick={handleLLMAnalyze}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-3 rounded-xl shadow transition"
-              >
-                {loadingLLM ? "Analyzing..." : "Run LLM Analysis"}
-              </button>
-            </div>
+      <div className="container">
+        <div className="hero-card">
+          <div className="hero-left">
+            <span className="badge">AI Resume Analyzer</span>
+            <h1>Resume Feedback, ATS Scoring & Career Copilot</h1>
+            <p>
+              Upload your resume, paste a job description, and get scoring, missing
+              skills, interview prep, rewritten projects and AI-generated messages.
+            </p>
           </div>
         </div>
 
-        {/* Results */}
-        <ScoreResult result={scoreResult} />
-        <LLMAnalysis analysis={llmAnalysis} />
+        <div className="dashboard-grid">
+          <div className="left-panel">
+            <ResumeUpload
+              selectedFile={selectedFile}
+              setSelectedFile={setSelectedFile}
+              handleUpload={handleUpload}
+              uploading={uploading}
+            />
+
+            <JobDescriptionInput
+              jobDescription={jobDescription}
+              setJobDescription={setJobDescription}
+              projectText={projectText}
+              setProjectText={setProjectText}
+              handleScoreMatch={handleScoreMatch}
+              handleLLMAnalysis={handleLLMAnalysis}
+              loadingScore={loadingScore}
+              loadingLLM={loadingLLM}
+            />
+          </div>
+
+          <div className="right-panel">
+            <ScoreResult scoringResult={scoringResult} />
+          </div>
+        </div>
+
+        <LLMAnalysis llmResult={llmResult} />
       </div>
     </div>
   );

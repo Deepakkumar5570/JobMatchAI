@@ -1,25 +1,22 @@
-function Navbar() {
-  return (
-    <nav className="bg-white border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 py-5 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-extrabold text-slate-900">JobMatchAI</h1>
-          <p className="text-slate-500 text-sm mt-1">
-            Resume Feedback, ATS Scoring & LLM Career Insights
-          </p>
-        </div>
+import React from "react";
 
-        <div className="hidden md:flex items-center gap-3">
-          <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
-            Backend Connected
-          </span>
-          <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium">
-            Frontend Ready
-          </span>
+const Navbar = () => {
+  return (
+    <div className="navbar">
+      <div className="navbar-left">
+        <div className="logo-box">J</div>
+        <div>
+          <h2>JobMatchAI</h2>
+          <p>Resume Feedback, ATS Scoring & LLM Career Insights</p>
         </div>
       </div>
-    </nav>
+
+      <div className="navbar-right">
+        <span className="status-pill green">Backend Connected</span>
+        <span className="status-pill blue">Frontend Ready</span>
+      </div>
+    </div>
   );
-}
+};
 
 export default Navbar;

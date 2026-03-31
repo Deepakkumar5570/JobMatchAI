@@ -1,130 +1,84 @@
-function LLMAnalysis({ analysis }) {
-  if (!analysis) return null;
+import React from "react";
 
-  const review = analysis.review || {};
-  const rewrittenProjects = analysis.rewritten_projects || [];
-  const interviewQuestions = analysis.interview_questions || {};
-  const careerAdvice = analysis.career_advice || {};
-  const applicationMessage = analysis.application_message || {};
-
-  const SectionCard = ({ title, children }) => (
-    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
-      <h3 className="text-xl font-semibold mb-4">{title}</h3>
-      {children}
-    </div>
-  );
-
-  const ListBlock = ({ items, empty = "No items available." }) => (
-    items && items.length ? (
-      <ul className="list-disc ml-6 space-y-1 text-slate-700">
+const renderList = (title, items) => (
+  <div className="analysis-block">
+    <h4>{title}</h4>
+    {Array.isArray(items) && items.length > 0 ? (
+      <ul>
         {items.map((item, idx) => (
           <li key={idx}>{item}</li>
         ))}
       </ul>
     ) : (
-      <p className="text-slate-500">{empty}</p>
-    )
-  );
+      <p>No items available.</p>
+    )}
+  </div>
+);
+
+const renderApplicationMessage = (title, text) => (
+  <div className="analysis-block">
+    <h4>{title}</h4>
+    <div className="message-box">
+      {text ? <p>{text}</p> : <p>N/A</p>}
+    </div>
+  </div>
+);
+
+const LLMAnalysis = ({ llmResult }) => {
+  if (!llmResult) return null;
+
+  const review = llmResult.review || {};
+  const interview = llmResult.interview_questions || {};
+  const career = llmResult.career_advice || {};
+  const application = llmResult.application_message || {};
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-indigo-700">LLM Analysis</h2>
-        <p className="text-slate-500 mt-1">
-          AI-generated resume feedback, project rewrites, interview prep and application messages.
-        </p>
+    <div className="card">
+      <h3>LLM Analysis</h3>
+      <p className="subtext">
+        AI-generated resume feedback, project rewrites, interview prep and application messages.
+      </p>
+
+      <div className="analysis-section">
+        <h3>Review</h3>
+        <div className="analysis-block">
+          <h4>Overall Evaluation</h4>
+          <p>{review.overall_evaluation || "N/A"}</p>
+        </div>
+
+        {renderList("Rejection Reasons", review.rejection_reasons)}
+        {renderList("Missing Skills", review.missing_skills)}
+        {renderList("Weak Areas", review.weak_areas)}
       </div>
 
-      <SectionCard title="Review">
-        <p className="text-slate-700">
-          <span className="font-semibold">Overall Evaluation:</span>{" "}
-          {review.overall_evaluation || "N/A"}
-        </p>
+      <div className="analysis-section">
+        <h3>Rewritten Projects</h3>
+        {renderList("Projects", llmResult.rewritten_projects)}
+      </div>
 
-        <div className="mt-4">
-          <p className="font-semibold mb-2">Rejection Reasons</p>
-          <ListBlock items={review.rejection_reasons || []} />
-        </div>
+      <div className="analysis-section">
+        <h3>Interview Questions</h3>
+        {renderList("Technical", interview.technical)}
+        {renderList("Project Based", interview.project_based)}
+        {renderList("HR", interview.hr)}
+      </div>
 
-        <div className="mt-4">
-          <p className="font-semibold mb-2">Missing Skills</p>
-          <ListBlock items={review.missing_skills || []} />
-        </div>
+      <div className="analysis-section">
+        <h3>Career Advice</h3>
+        {renderList("Skills to Learn", career.skills_to_learn)}
+        {renderList("Projects to Build", career.projects_to_build)}
+        {renderList("Resume Improvements", career.resume_improvements)}
+        {renderList("2-Month Roadmap", career.roadmap_2_months)}
+      </div>
 
-        <div className="mt-4">
-          <p className="font-semibold mb-2">Weak Areas</p>
-          <ListBlock items={review.weak_areas || []} />
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Rewritten Projects">
-        <ListBlock items={rewrittenProjects} />
-      </SectionCard>
-
-      <SectionCard title="Interview Questions">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <p className="font-semibold mb-2">Technical</p>
-            <ListBlock items={interviewQuestions.technical || []} />
-          </div>
-          <div>
-            <p className="font-semibold mb-2">Project Based</p>
-            <ListBlock items={interviewQuestions.project_based || []} />
-          </div>
-          <div>
-            <p className="font-semibold mb-2">HR</p>
-            <ListBlock items={interviewQuestions.hr || []} />
-          </div>
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Career Advice">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <p className="font-semibold mb-2">Skills to Learn</p>
-            <ListBlock items={careerAdvice.skills_to_learn || []} />
-          </div>
-          <div>
-            <p className="font-semibold mb-2">Projects to Build</p>
-            <ListBlock items={careerAdvice.projects_to_build || []} />
-          </div>
-          <div>
-            <p className="font-semibold mb-2">Resume Improvements</p>
-            <ListBlock items={careerAdvice.resume_improvements || []} />
-          </div>
-          <div>
-            <p className="font-semibold mb-2">2-Month Roadmap</p>
-            <ListBlock items={careerAdvice.roadmap_2_months || []} />
-          </div>
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Application Message">
-        <div className="space-y-4">
-          <div>
-            <p className="font-semibold mb-2">Cold Email</p>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 whitespace-pre-wrap text-slate-700">
-              {applicationMessage.cold_email || "N/A"}
-            </div>
-          </div>
-
-          <div>
-            <p className="font-semibold mb-2">Referral Message</p>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 whitespace-pre-wrap text-slate-700">
-              {applicationMessage.referral_message || "N/A"}
-            </div>
-          </div>
-
-          <div>
-            <p className="font-semibold mb-2">LinkedIn DM</p>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 whitespace-pre-wrap text-slate-700">
-              {applicationMessage.linkedin_dm || "N/A"}
-            </div>
-          </div>
-        </div>
-      </SectionCard>
+      <div className="analysis-section">
+        <h3>Application Message</h3>
+        {renderApplicationMessage("Cold Email", application.cold_email)}
+        {renderApplicationMessage("Referral Message", application.referral_message)}
+        {renderApplicationMessage("LinkedIn DM", application.linkedin_dm)}
+      </div>
     </div>
   );
-}
+};
 
 export default LLMAnalysis;
