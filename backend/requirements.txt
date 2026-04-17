@@ -2,20 +2,21 @@ fastapi==0.110.0
 uvicorn[standard]==0.29.0
 python-multipart==0.0.9
 
-# Core ML / Data
+# Core ML / scoring
 numpy==1.26.4
 pandas==2.2.2
 scikit-learn==1.4.2
 
-# NLP / Embeddings
+# Embeddings (used in ATS matching)
 sentence-transformers==2.6.1
 transformers==4.41.2
 torch==2.2.2
 
-# Resume Parsing
-PyMuPDF==1.23.7      # for PDF (fitz)
-python-docx==1.1.0   # for DOCX
+# Resume parsing
+PyMuPDF==1.23.7
+python-docx==1.1.0
 
-# Optional but useful
+# API / utils
 pydantic==2.6.4
 requests==2.31.0
+python-dotenv==1.0.1
