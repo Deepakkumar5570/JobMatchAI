@@ -165,7 +165,8 @@ pip install -r requirements.txt
 ### 5️⃣ Run the Project
 
 ```bash
-python app.py
+uvicorn app.main:app --reload
+
 ```
 
 > If your main file is different (e.g. `main.py`, `streamlit_app.py`), update the command accordingly.
