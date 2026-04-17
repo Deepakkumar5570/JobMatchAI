@@ -6,10 +6,12 @@ import ResumeUpload from "./components/ResumeUpload";
 import JobDescriptionInput from "./components/JobDescriptionInput";
 import ScoreResult from "./components/ScoreResult";
 import LLMAnalysis from "./components/LLMAnalysis";
+import Footer from "./components/Footer";
 
 import { uploadResume, runScoreMatch, runLLMAnalysis } from "./services/api";
 
 function App() {
+  const [view, setView] = useState("home");
   const [selectedFile, setSelectedFile] = useState(null);
   const [resumeText, setResumeText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -128,36 +130,108 @@ function App() {
           </div>
         </div>
 
-        <div className="dashboard-grid">
-          <div className="left-panel">
-            <ResumeUpload
-              selectedFile={selectedFile}
-              setSelectedFile={setSelectedFile}
-              handleUpload={handleUpload}
-              uploading={uploading}
-            />
+        <div className="hero-section">
+          <h1>🚀 AI Resume Analyzer & Career Copilot</h1>
 
-            <JobDescriptionInput
-              jobDescription={jobDescription}
-              setJobDescription={setJobDescription}
-              projectText={projectText}
-              setProjectText={setProjectText}
-              handleScoreMatch={handleScoreMatch}
-              handleLLMAnalysis={handleLLMAnalysis}
-              loadingScore={loadingScore}
-              loadingLLM={loadingLLM}
-            />
-          </div>
+          <p>
+            Get ATS score, skill gaps, role fit, and AI-powered career insights
+            tailored to your dream job.
+          </p>
 
-          <div className="right-panel">
-            <ScoreResult scoringResult={scoringResult} />
+
+          <div className="hero-buttons">
+            <button
+              className="primary-btn"
+              onClick={() => setView("upload")}
+            >
+              Try Now
+            </button>
+
+            <button
+              className="secondary-btn"
+              onClick={() => setView("features")}
+            >
+              View Features
+            </button>
           </div>
         </div>
 
+        {view === "features" && (
+          <div id="features" className="features-section">
+
+            <h2>✨ What You Get</h2>
+
+            <div className="features-grid">
+              <div className="feature-card">
+                <h3>📊 ATS Scoring</h3>
+                <p>See how well your resume passes ATS filters.</p>
+              </div>
+
+              <div className="feature-card">
+                <h3>🧠 AI Insights</h3>
+                <p>Understand strengths, weaknesses, and improvements.</p>
+              </div>
+
+              <div className="feature-card">
+                <h3>🎯 Skill Gap Analysis</h3>
+                <p>Find missing skills based on job description.</p>
+              </div>
+
+              <div className="feature-card">
+                <h3>💼 Career Guidance</h3>
+                <p>Get interview questions and job-ready suggestions.</p>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        <div className="how-section">
+          <h2>⚙️ How It Works</h2>
+
+          <div className="steps">
+            <div>1️⃣ Upload Resume</div>
+            <div>2️⃣ Paste Job Description</div>
+            <div>3️⃣ Get AI Analysis</div>
+          </div>
+        </div>
+
+        {view === "upload" && (
+          <div className="dashboard-grid">
+
+            <div id="upload-section" className="left-panel">
+              <ResumeUpload
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+                handleUpload={handleUpload}
+                uploading={uploading}
+              />
+
+              <JobDescriptionInput
+                jobDescription={jobDescription}
+                setJobDescription={setJobDescription}
+                projectText={projectText}
+                setProjectText={setProjectText}
+                handleScoreMatch={handleScoreMatch}
+                handleLLMAnalysis={handleLLMAnalysis}
+                loadingScore={loadingScore}
+                loadingLLM={loadingLLM}
+              />
+            </div>
+
+            <div className="right-panel">
+              <ScoreResult scoringResult={scoringResult} />
+            </div>
+
+          </div>
+        )}
+
         <LLMAnalysis llmResult={llmResult} />
       </div>
+      <Footer />
     </div>
   );
 }
+
 
 export default App;
