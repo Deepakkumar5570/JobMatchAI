@@ -89,13 +89,13 @@ const ScoreResult = ({ scoringResult }) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <h3>📊 Score Visualization</h3>
+          <h3>Score Visualization</h3>
           <ScoreChart data={scoringResult} />
         </motion.div>
 
         {/* ✅ INSIGHTS */}
         <div className="insight-box">
-          <h3>🧠 What This Means</h3>
+          <h3>What This Means</h3>
 
           <ul>
             <li>
@@ -182,11 +182,11 @@ const ScoreResult = ({ scoringResult }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <h3>🎯 Action Plan</h3>
+          <h3>Action Plan</h3>
 
           <div className="action-grid">
             <div className="action-card">
-              <h4>🚀 Quick Wins</h4>
+              <h4>Quick Wins</h4>
               <ul>
                 <li>Add missing keywords</li>
                 <li>Improve formatting</li>
@@ -195,7 +195,7 @@ const ScoreResult = ({ scoringResult }) => {
             </div>
 
             <div className="action-card">
-              <h4>📈 Medium Effort</h4>
+              <h4> Medium Effort</h4>
               <ul>
                 <li>Add 1–2 strong projects</li>
                 <li>Quantify achievements</li>
@@ -204,7 +204,7 @@ const ScoreResult = ({ scoringResult }) => {
             </div>
 
             <div className="action-card">
-              <h4>🏆 High Impact</h4>
+              <h4> High Impact</h4>
               <ul>
                 <li>Build domain-specific projects</li>
                 <li>Optimize resume for target role</li>

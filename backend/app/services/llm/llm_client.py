@@ -1,35 +1,39 @@
-import google.generativeai as genai
-from dotenv import load_dotenv
 import os
-from pathlib import Path
+from dotenv import load_dotenv
+from google import genai
 
-# Load .env
-env_path = Path(__file__).resolve().parents[3] / ".env"
-load_dotenv(dotenv_path=env_path)
+# ✅ LOAD .env FILE (VERY IMPORTANT)
+load_dotenv()
 
-api_key = os.getenv("GEMINI_API_KEY")
+client = None
 
-if not api_key:
-    raise ValueError("GEMINI_API_KEY not found")
 
-print("Gemini Key Loaded:", api_key[:10] + "...")
+def get_llm():
+    global client
 
-# ✅ Configure Gemini
-genai.configure(api_key=api_key)
+    if client is None:
+        api_key = os.getenv("GEMINI_API_KEY")
 
-# ✅ Use YOUR model (as requested)
-model = genai.GenerativeModel("gemini-2.5-flash-lite")
+        print("DEBUG API KEY:", api_key)  # 👈 debug line
 
-# ✅ Correct response function
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY not found")
+
+        client = genai.Client(api_key=api_key)
+
+    return client
+
+
 def generate_response(prompt: str) -> str:
     try:
-        response = model.generate_content(prompt)
-        
-        # Safe handling (sometimes response.text missing hota hai)
-        if hasattr(response, "text"):
-            return response.text.strip()
-        else:
-            return str(response)
+        llm = get_llm()
+
+        response = llm.models.generate_content(
+            model="gemini-2.5-flash-lite",
+            contents=prompt,
+        )
+
+        return response.text
 
     except Exception as e:
         return f"LLM Error: {str(e)}"

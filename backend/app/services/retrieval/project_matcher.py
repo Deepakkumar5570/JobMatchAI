@@ -2,7 +2,15 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from app.services.extraction.skill_extractor import extract_skills
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        print("🔥 Loading project model...")
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    return model
 
 def split_projects(project_text: str) -> list:
     chunks = [chunk.strip() for chunk in project_text.split(".") if chunk.strip()]
@@ -12,9 +20,9 @@ def semantic_project_similarity(project_chunks: list, jd_text: str) -> float:
     if not project_chunks:
         return 0.0
 
-    scores = []
+    model = get_model()
 
-    # Use only first important part of JD for stronger semantic comparison
+    scores = []
     jd_key = jd_text[:300]
 
     for chunk in project_chunks:

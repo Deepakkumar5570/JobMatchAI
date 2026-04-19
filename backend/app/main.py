@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import resume, jobs, scoring, health, llm
 
+# ✅ CREATE APP FIRST
 app = FastAPI(
     title="JobMatchAI API",
     version="1.0.0",
@@ -10,18 +11,41 @@ app = FastAPI(
 )
 
 # ----------------------------
-# CORS middleware for frontend
+# ✅ CORS (IMPORTANT FIX FOR DEPLOY)
 # ----------------------------
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://job-match-ai-five.vercel.app",  # 🔥 your frontend
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # ----------------------------
-# API Routes
+# ✅ IMPORT AFTER APP CREATED
+# ----------------------------
+from app.services.retrieval.semantic_matcher import get_model
+from app.services.llm.llm_client import get_llm
+
+# ----------------------------
+# ✅ STARTUP EVENT (NOW WORKS)
+# ----------------------------
+@app.on_event("startup")
+async def startup_event():
+    print("🚀 Preloading models...")
+
+    get_model()
+    get_llm()
+
+    print("✅ Models ready!")
+
+# ----------------------------
+# API ROUTES
 # ----------------------------
 app.include_router(health.router, prefix="/health", tags=["Health"])
 app.include_router(resume.router, prefix="/resume", tags=["Resume"])
