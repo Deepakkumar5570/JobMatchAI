@@ -1,4 +1,4 @@
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 from pathlib import Path
@@ -14,18 +14,22 @@ if not api_key:
 
 print("Gemini Key Loaded:", api_key[:10] + "...")
 
-# Create client
-client = genai.Client(api_key=api_key)
+# ✅ Configure Gemini
+genai.configure(api_key=api_key)
 
+# ✅ Use YOUR model (as requested)
+model = genai.GenerativeModel("gemini-2.5-flash-lite")
+
+# ✅ Correct response function
 def generate_response(prompt: str) -> str:
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-lite",
-            contents=prompt
-        )
-        return response.text.strip()
+        response = model.generate_content(prompt)
+        
+        # Safe handling (sometimes response.text missing hota hai)
+        if hasattr(response, "text"):
+            return response.text.strip()
+        else:
+            return str(response)
+
     except Exception as e:
         return f"LLM Error: {str(e)}"
-
-
-
