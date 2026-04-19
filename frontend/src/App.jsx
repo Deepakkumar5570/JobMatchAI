@@ -163,22 +163,22 @@ function App() {
 
             <div className="features-grid">
               <div className="feature-card">
-                <h3>📊 ATS Scoring</h3>
+                <h3>ATS Scoring</h3>
                 <p>See how well your resume passes ATS filters.</p>
               </div>
 
               <div className="feature-card">
-                <h3>🧠 AI Insights</h3>
+                <h3>AI Insights</h3>
                 <p>Understand strengths, weaknesses, and improvements.</p>
               </div>
 
               <div className="feature-card">
-                <h3>🎯 Skill Gap Analysis</h3>
+                <h3>Skill Gap Analysis</h3>
                 <p>Find missing skills based on job description.</p>
               </div>
 
               <div className="feature-card">
-                <h3>💼 Career Guidance</h3>
+                <h3> Career Guidance</h3>
                 <p>Get interview questions and job-ready suggestions.</p>
               </div>
             </div>
