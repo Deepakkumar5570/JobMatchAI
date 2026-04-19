@@ -79,8 +79,10 @@
 # wrapt==2.1.2
 fastapi==0.110.0
 uvicorn[standard]==0.29.0
- python-multipart==0.0.9
-google-generativea1==0.8.5
+python-multipart==0.0.9
+google-generativeai
+
+
 # Core ML / scoring
 numpy==1.26.4
 pandas==2.2.2
